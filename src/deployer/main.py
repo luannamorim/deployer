@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from deployer.config import settings
+from deployer.middleware.logging import logging_dispatch
 from deployer.middleware.request_id import request_id_dispatch
 from deployer.observability.logger import configure_logging, get_logger
 
@@ -30,7 +31,9 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     # Middleware registered innermost-first; Starlette makes last-registered the outermost.
+    # Execution order on inbound: logging → request_id → route handler
     app.middleware("http")(request_id_dispatch)
+    app.middleware("http")(logging_dispatch)
     return app
 
 
