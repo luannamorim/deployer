@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import time
 from typing import TYPE_CHECKING, Annotated
 
@@ -48,8 +49,9 @@ async def health(
     provider: LLMProvider | None = getattr(request.app.state, "provider", None)
     start_time: float = getattr(request.app.state, "start_time", time.time())
 
-    redis_status = "connected" if await _redis_ok(redis) else "disconnected"
-    provider_status = "reachable" if await _provider_ok(provider) else "unreachable"
+    redis_ok, provider_ok = await asyncio.gather(_redis_ok(redis), _provider_ok(provider))
+    redis_status = "connected" if redis_ok else "disconnected"
+    provider_status = "reachable" if provider_ok else "unreachable"
     uptime = int(time.time() - start_time)
 
     overall = (

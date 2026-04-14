@@ -84,8 +84,8 @@ class OpenAIProvider(LLMProvider):
                 yield StreamChunk(
                     content=delta.get("content") or "",
                     finish_reason=choice.get("finish_reason"),
-                    prompt_tokens=usage.get("prompt_tokens", 0),
-                    completion_tokens=usage.get("completion_tokens", 0),
+                    prompt_tokens=usage.get("prompt_tokens"),
+                    completion_tokens=usage.get("completion_tokens"),
                 )
 
     async def check_health(self) -> bool:

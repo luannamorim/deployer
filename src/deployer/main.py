@@ -36,9 +36,11 @@ def build_provider(cfg: Settings) -> LLMProvider:
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     cfg: Settings = app.state.settings
     configure_logging(cfg.log_level)
-    redis_client: Redis = Redis.from_url(cfg.redis_url, decode_responses=True)
-    app.state.redis = redis_client
-    # Only build provider if not injected by tests
+    if not getattr(app.state, "redis", None):
+        redis_client: Redis = Redis.from_url(cfg.redis_url, decode_responses=True)
+        app.state.redis = redis_client
+    else:
+        redis_client = app.state.redis
     if not getattr(app.state, "provider", None):
         app.state.provider = build_provider(cfg)
     app.state.start_time = time.time()

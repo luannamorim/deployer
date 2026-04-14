@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
+from httpx import ASGITransport, AsyncClient
 
-if TYPE_CHECKING:
-    from httpx import AsyncClient
+from deployer.main import create_app
+from tests.conftest import MockLLMProvider
 
 pytestmark = pytest.mark.asyncio
 
@@ -44,11 +43,6 @@ class TestHealthEndpoint:
         test_settings: object,
         fake_redis: object,
     ) -> None:
-        from httpx import ASGITransport, AsyncClient
-
-        from deployer.main import create_app
-        from tests.conftest import MockLLMProvider
-
         unhealthy_provider = MockLLMProvider(healthy=False)
         app = create_app(
             settings_override=test_settings,  # type: ignore[arg-type]
@@ -84,10 +78,6 @@ class TestHealthReadyEndpoint:
         test_settings: object,
         fake_redis: object,
     ) -> None:
-        from httpx import ASGITransport, AsyncClient
-
-        from deployer.main import create_app
-
         # No provider injected — app.state.provider will be None
         app = create_app(settings_override=test_settings)  # type: ignore[arg-type]
         app.state.redis = fake_redis

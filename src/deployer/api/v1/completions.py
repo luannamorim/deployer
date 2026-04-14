@@ -47,9 +47,9 @@ async def _stream_completion(
     completion_tokens = 0
 
     async for chunk in provider.stream(provider_request):
-        if chunk.prompt_tokens:
+        if chunk.prompt_tokens is not None:
             prompt_tokens = chunk.prompt_tokens
-        if chunk.completion_tokens:
+        if chunk.completion_tokens is not None:
             completion_tokens = chunk.completion_tokens
 
         if chunk.content:
