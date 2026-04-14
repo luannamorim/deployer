@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from deployer.api.v1 import chat, completions
+from deployer.api.v1 import chat, completions, health
 
 api_router = APIRouter()
 api_router.include_router(chat.router)
 api_router.include_router(completions.router)
+api_router.include_router(health.router)
