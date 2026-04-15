@@ -60,7 +60,6 @@ llm_cache_misses_total = Counter(
     labelnames=("model",),
 )
 
-# 0=closed, 1=open, 2=half-open
 llm_circuit_breaker_state = Gauge(
     "llm_circuit_breaker_state",
     "Circuit breaker state (0=closed, 1=open, 2=half-open)",
