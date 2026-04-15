@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import enum
 import time
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, ParamSpec, TypeVar
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
 
+P = ParamSpec("P")
 T = TypeVar("T")
 
 
@@ -43,19 +44,15 @@ class CircuitBreaker:
 
     @property
     def state(self) -> CircuitState:
-        # Allow a probe through once recovery has elapsed.
-        if (
-            self._state is CircuitState.OPEN
-            and self._opened_at is not None
-            and time.monotonic() - self._opened_at >= self._recovery
-        ):
-            self._state = CircuitState.HALF_OPEN
         return self._state
 
-    async def call(self, func: Callable[..., Awaitable[T]], *args: object, **kwargs: object) -> T:
+    async def call(self, func: Callable[P, Awaitable[T]], *args: P.args, **kwargs: P.kwargs) -> T:
         """Invoke ``func`` guarded by the breaker."""
-        if self.state is CircuitState.OPEN:
-            raise CircuitBreakerOpen("circuit breaker is open")
+        if self._state is CircuitState.OPEN:
+            if self._opened_at is not None and time.monotonic() - self._opened_at >= self._recovery:
+                self._state = CircuitState.HALF_OPEN
+            else:
+                raise CircuitBreakerOpen("circuit breaker is open")
         try:
             result = await func(*args, **kwargs)
         except Exception:

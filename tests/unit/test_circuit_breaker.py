@@ -63,28 +63,31 @@ class TestCircuitBreaker:
             await cb.call(_fail)
         assert cb.state is CircuitState.CLOSED
 
-    async def test_transitions_to_half_open_after_recovery(self) -> None:
-        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.05)
+    async def test_allows_probe_after_recovery(self) -> None:
+        # After recovery elapses, the next call is allowed through (not rejected
+        # with CircuitBreakerOpen) — the transition to HALF_OPEN happens inside call().
+        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.02)
         with pytest.raises(_Boom):
             await cb.call(_fail)
         assert cb.state is CircuitState.OPEN
-        await asyncio.sleep(0.06)
-        assert cb.state is CircuitState.HALF_OPEN
-
-    async def test_successful_probe_closes_breaker(self) -> None:
-        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.05)
+        await asyncio.sleep(0.05)
+        # Would raise CircuitBreakerOpen if still open; raises _Boom instead = probe allowed
         with pytest.raises(_Boom):
             await cb.call(_fail)
-        await asyncio.sleep(0.06)
+
+    async def test_successful_probe_closes_breaker(self) -> None:
+        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.02)
+        with pytest.raises(_Boom):
+            await cb.call(_fail)
+        await asyncio.sleep(0.05)
         assert await cb.call(_ok) == "ok"
         assert cb.state is CircuitState.CLOSED
 
     async def test_failed_probe_reopens_breaker(self) -> None:
-        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.05)
+        cb = CircuitBreaker(failure_threshold=1, recovery_seconds=0.02)
         with pytest.raises(_Boom):
             await cb.call(_fail)
-        await asyncio.sleep(0.06)
-        assert cb.state is CircuitState.HALF_OPEN
+        await asyncio.sleep(0.05)
         with pytest.raises(_Boom):
             await cb.call(_fail)
         assert cb.state is CircuitState.OPEN
