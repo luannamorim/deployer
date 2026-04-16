@@ -3,7 +3,7 @@
 # Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 #
 # Changes from base:
-# - No Grafana (use a managed observability stack in production)
+# - Grafana behind --profile observability (opt-in; use a managed stack by default)
 # - Redis not exposed to host
 # - Resource limits on all services
 # - Production environment variables

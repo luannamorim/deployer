@@ -51,4 +51,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # WORKERS controls uvicorn worker count. Default 1 for dev; set to (2*CPU+1) in production.
 ENV WORKERS=1
 
-CMD uvicorn deployer.main:app --host 0.0.0.0 --port 8000 --workers ${WORKERS}
+CMD exec uvicorn deployer.main:app --host 0.0.0.0 --port 8000 --workers ${WORKERS}

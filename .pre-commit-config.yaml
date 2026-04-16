@@ -18,6 +18,8 @@ repos:
           - structlog>=25
           - redis>=5
           - fastapi>=0.115
+          - httpx>=0.28
+          - tiktoken>=0.9
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
