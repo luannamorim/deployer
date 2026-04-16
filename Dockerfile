@@ -37,6 +37,10 @@ ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
+LABEL org.opencontainers.image.title="deployer" \
+      org.opencontainers.image.description="Production-ready deploy template for LLM applications" \
+      org.opencontainers.image.licenses="MIT"
+
 USER deployer
 
 EXPOSE 8000
@@ -44,4 +48,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')" || exit 1
 
-CMD ["uvicorn", "deployer.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# WORKERS controls uvicorn worker count. Default 1 for dev; set to (2*CPU+1) in production.
+ENV WORKERS=1
+
+CMD uvicorn deployer.main:app --host 0.0.0.0 --port 8000 --workers ${WORKERS}
