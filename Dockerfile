@@ -1,12 +1,12 @@
 # ─────────────────────────────────────────────
 # Stage 1: builder — install dependencies
 # ─────────────────────────────────────────────
-FROM python:3.12-slim@sha256:8f3afe23bf8f8eb47d15a779d74ec57058a2a60d58eb8547ca9c2e4a81e67b17 AS builder
+FROM python:3.12.10-slim AS builder
 
 WORKDIR /app
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.11.6@sha256:d7754efe9e71d1fd7e0b5b3f5555c2a0faab43ac4c0fedd0fb3ed3f4ce576d6d /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /usr/local/bin/uv
 
 # Copy dependency files first for layer caching
 COPY pyproject.toml uv.lock ./
@@ -18,7 +18,7 @@ RUN uv sync --frozen --no-dev
 # ─────────────────────────────────────────────
 # Stage 2: runtime — minimal production image
 # ─────────────────────────────────────────────
-FROM python:3.12-slim@sha256:8f3afe23bf8f8eb47d15a779d74ec57058a2a60d58eb8547ca9c2e4a81e67b17 AS runtime
+FROM python:3.12.10-slim AS runtime
 
 WORKDIR /app
 
