@@ -3,7 +3,7 @@ description: Implement a phase from the project briefing
 argument-hint: [phase-name]
 ---
 
-Read docs/BRIEFING.md and implement $ARGUMENTS.
+Read docs/SPEC.md and implement $ARGUMENTS.
 
 Follow these rules strictly:
 1. Identify all commits listed under that phase

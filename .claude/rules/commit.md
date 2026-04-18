@@ -14,7 +14,7 @@
 - Never accumulate work and commit everything at the end
 - Each commit represents ONE logical unit of work
 - Tests for a feature are committed in the same phase as the feature, not deferred
-- Follow the commit plan in docs/BRIEFING.md phase by phase
+- Follow the commit plan in docs/SPEC.md phase by phase
 
 - Before committing, always run: `make lint` and `make test`
 - If either fails, fix before committing

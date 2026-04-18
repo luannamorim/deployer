@@ -77,7 +77,7 @@ FastAPI, Uvicorn, pydantic-settings, Redis, structlog, prometheus-client, httpx,
 
 - Conventional Commits: `type(scope): description` (lowercase, imperative, no period)
 - Types: `feat`, `fix`, `test`, `docs`, `ci`, `refactor`, `chore`
-- Follow the phased commit plan in `docs/BRIEFING.md` section 15
+- Follow the phased commit plan in `docs/SPEC.md` section 15
 - Each commit = one logical unit of work, project must be in working state
 
 ## Docker

@@ -190,7 +190,7 @@ deployer/
 +-- pyproject.toml                   # Project metadata, dependencies, tool config
 +-- README.md
 +-- docs/
-    +-- BRIEFING.md                  # This file
+    +-- SPEC.md                      # This file
     +-- DECISIONS.md                 # Architecture Decision Records (generated during build)
 ```
 
